@@ -1,5 +1,5 @@
 baseurl = "http://workstation:1313"
-title = "johndoes"
+title = "KuduLab"
 
 theme = "hugo-coder"
 
@@ -21,15 +21,15 @@ disqusShortname = "ait-lab"
     keywords = "blog,developer,personal"
     info = "Full Stack DevOps and Magician"
     avatarurl = "images/avatar.jpg"
-    footercontent = "Enter a text here."
+    # footercontent = "Enter a text here."
 
     dateformat = "January 2, 2006"
 
-    hideCredits = false
+    hideCredits = true
     hideCopyright = false
 
     # Git Commit in Footer, uncomment the line below to enable it.
-    commit = "https://github.com/luizdepra/hugo-coder/tree/"
+    # commit = "https://github.com/luizdepra/hugo-coder/tree/"
 
     rtl = false
 
