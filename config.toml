@@ -67,14 +67,14 @@ disqusShortname = "ait-lab"
         languagename = "English"
 
         [[languages.en.menu.main]]
-        name = "About"
+        name = "Blog"
         weight = 1
-        url = "/about/"
+        url = "/posts/"
 
         [[languages.en.menu.main]]
-        name = "Blog"
+        name = "About"
         weight = 2
-        url = "/posts/"
+        url = "/about/"
 
         [[languages.en.menu.main]]
         name = "Projects"
@@ -82,6 +82,6 @@ disqusShortname = "ait-lab"
         url = "/projects/"
 
         [[languages.en.menu.main]]
-        name = "Contact me"
+        name = "Contact"
         weight = 5
         url = "/contact/"
