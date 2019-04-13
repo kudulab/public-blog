@@ -5,7 +5,7 @@ description = "The post demonstrates features of the coder theme."
 images = ["/images/N90.jpg"]
 math = "true"
 series = ["Theme", "Hugo"]
-author = "Tom"
+author = "Tomasz Sętkowski"
 +++
 
 ## Style Demo
