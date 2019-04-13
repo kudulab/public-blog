@@ -67,9 +67,9 @@ disqusShortname = "ait-lab"
         languagename = "English"
 
         [[languages.en.menu.main]]
-        name = "Blog"
+        name = "Home"
         weight = 1
-        url = "/posts/"
+        url = "/"
 
         [[languages.en.menu.main]]
         name = "About"
