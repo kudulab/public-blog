@@ -1,6 +1,6 @@
 +++
 title = "Contact"
 slug = "contact"
+type = "contact"
+layout = "contact"
 +++
-
-Follow me, @johndoe.
