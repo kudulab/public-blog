@@ -18,9 +18,8 @@ disqusShortname = "ait-lab"
 [params]
     #author = " Doe"
     description = "John Doe's personal website"
+
     keywords = "blog,developer,personal"
-    info = "Full Stack DevOps and Magician"
-    avatarurl = "images/avatar.jpg"
     # footercontent = "Enter a text here."
 
     dateformat = "January 2, 2006"
@@ -42,20 +41,39 @@ disqusShortname = "ait-lab"
     # Custom CSS
     custom_css = []
 
+    author_tom = "Tomasz Sętkowski"
+    tom_info = "DevOps Engineer | Software Developer"
+    tom_avatarurl = "images/avatar.jpg"
+
+    author_ewa = "Ewa Chechowska"
+    ewa_info = "DevOps Engineer"
+    ewa_avatarurl = "images/avatar.jpg"
+
 [taxonomies]
   series = "series"
 
-[[params.social]]
+[[params.tom_social]]
     name = "Github"
     icon = "fab fa-github"
     weight = 1
     url = "https://github.com/johndoe/"
-[[params.social]]
+[[params.tom_social]]
     name = "Twitter"
     icon = "fab fa-twitter"
     weight = 3
     url = "https://twitter.com/johndoe/"
-[[params.social]]
+[[params.tom_social]]
+    name = "LinkedIn"
+    icon = "fab fa-linkedin"
+    weight = 4
+    url = "https://www.linkedin.com/in/johndoe/"
+
+[[params.ewa_social]]
+    name = "Github"
+    icon = "fab fa-github"
+    weight = 1
+    url = "https://github.com/johndoe/"
+[[params.ewa_social]]
     name = "LinkedIn"
     icon = "fab fa-linkedin"
     weight = 4
@@ -72,16 +90,11 @@ disqusShortname = "ait-lab"
         url = "/"
 
         [[languages.en.menu.main]]
-        name = "About"
-        weight = 2
-        url = "/about/"
-
-        [[languages.en.menu.main]]
         name = "Projects"
         weight = 3
         url = "/projects/"
 
         [[languages.en.menu.main]]
-        name = "Contact"
+        name = "About"
         weight = 5
         url = "/contact/"
