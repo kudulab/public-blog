@@ -42,12 +42,12 @@ disqusShortname = "ait-lab"
     custom_css = []
 
     author_tom = "Tomasz Sętkowski"
-    tom_info = "DevOps Engineer | Software Developer"
-    tom_avatarurl = "images/avatar.jpg"
+    tom_info = "DevOps | Software Developer"
+    tom_avatarurl = "/images/tom_avatar.png"
 
     author_ewa = "Ewa Chechowska"
     ewa_info = "DevOps Engineer"
-    ewa_avatarurl = "images/avatar.jpg"
+    ewa_avatarurl = "/images/ewa_avatar.png"
 
 [taxonomies]
   series = "series"
