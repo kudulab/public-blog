@@ -1,0 +1,17 @@
+<section class="container list">
+  <h1 class="home-title">
+    {{- .Title -}}
+  </h1>
+  <ul>
+    {{ range .Site.Data.projects.Github }}
+    <li>
+      <span class="project">
+        <a href="https://github.com/{{ .User }}/{{ .Repo }}">
+          <i class="project fab fa-github" > {{ .User }}/{{ .Repo }}</i>
+        </a>
+      </span>
+      <a class="title" href="https://github.com/{{ .User }}/{{ .Repo }}">{{ .Description }}</a>
+    </li>
+    {{ end }}
+  </ul>
+</section>

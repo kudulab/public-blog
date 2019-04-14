@@ -1,0 +1,13 @@
+Github:
+  - User: tomzo
+    Repo: gocd-yaml-config-plugin
+    Description: GoCD pipelines as YAML
+  - User: tomzo
+    Repo: gocd-json-config-plugin
+    Description: GoCD pipelines as JSON
+  - User: ai-traders
+    Repo: LiGet
+    Description: NuGet server
+  - User: ai-traders
+    Repo: dojo
+    Description: Build environment in docker
