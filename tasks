@@ -131,7 +131,7 @@ case "${command}" in
       done
       cp -r ../src/public/* .
       git add .
-      git commit -m "generated from git ref: ${git_ref}"
+      git commit -m "generated from git ref: ${git_ref}" || true
       git push
       exit $?
       ;;
