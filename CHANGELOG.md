@@ -1,3 +1,7 @@
+### 0.2.3 (2019-Apr-15)
+
+Added google analytics
+
 ### 0.2.2 (2019-Apr-15)
 
 Commit CNAME file at the root of github pages repo
