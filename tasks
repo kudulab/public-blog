@@ -5,10 +5,68 @@ if [[ ! -f ./releaser ]];then
   wget --quiet http://http.archive.ai-traders.com/releaser/1.0.3/releaser || { echo "cannot download releaser, but maybe not needed"; }
 fi
 source ./releaser
+if [[ ! -f ./secret-ops ]]; then
+  wget --quiet http://os2.ai-traders.com:6780/swift/v1/secret-ops/0.4.0/secret-ops || { echo "cannot download secret-ops"; }
+fi
+if [[ -f ./secret-ops ]]; then source ./secret-ops; fi
 releaser_init
+
+KUDU_SERVICE="www"
+
+function read_from_vault_or_die {
+  local vault_key=$1
+  local field=$2
+  echo "Trying to read from vault: ${vault_key}." >&2
+  if [ -z "$VAULT_TOKEN" ]; then
+    echo "Failed reading from vault: VAULT_TOKEN is not set." >&2
+    exit 1
+  fi
+  if [ -z "$VAULT_ADDR" ]; then
+    echo "Failed reading from vault: VAULT_ADDR is not set." >&2
+    exit 1
+  fi
+  vault kv get --field=$field secret/gocd/${vault_key}
+  if [ $? != 0 ]; then
+    echo "Failed reading from vault: ${vault_key}" >&2
+    exit 1
+  else
+    echo "Successfully read from vault: ${vault_key}" >&2
+  fi
+}
+
+function tf_apply {
+  operation=$1
+
+  cd terraform/
+  terraform init -backend-config path=terraform/kudu-${KUDU_SERVICE}
+  terraform get
+  if [[ "${operation}" == "apply" ]]; then
+    terraform plan -out="kudu_deployment.tfplan"
+  elif [[ "${operation}" == "destroy" ]]; then
+    terraform plan -out="kudu_deployment.tfplan" -destroy
+  fi
+  terraform apply kudu_deployment.tfplan
+}
 
 command="$1"
 case "${command}" in
+  _set_dns)
+      tf_apply "apply"
+      ;;
+  set_dns)
+      # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from vault
+      export AWS_ACCESS_KEY_ID=$(read_from_vault_or_die "aws" "access_key_id")
+      export AWS_SECRET_ACCESS_KEY=$(read_from_vault_or_die "aws" "secret_access_key")
+      dojo -c terraform/Dojofile "./tasks _set_dns"
+      ;;
+  generate_vault_token)
+      set -e
+      vault_token=$(vault token create -orphan -renewable=true -period=78h -policy=gocd -field token -metadata gocd_renew=true)
+      secured_token_gocd=$(encrypt_with_gocd2 "${vault_token}")
+      echo "Generated token: ${vault_token} and encrypted by GoCD server"
+      echo "Replacing pipeline config with VAULT_TOKEN: ${secured_token_gocd}"
+      find . -name "*.gocd.yaml" -exec sed -i -E "s#VAULT_TOKEN\:.*#VAULT_TOKEN: ${secured_token_gocd}#g" {} \;
+      ;;
   set_version)
       if [[ -n "$2" ]]; then
         next_version="$2"

@@ -3,3 +3,6 @@
 /src/resources/
 /releaser
 /src/public
+/terraform/*.tfplan
+/terraform/.terraform
+/secret-ops
