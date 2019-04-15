@@ -88,7 +88,7 @@ case "${command}" in
       elif [[ "${KUDU_ENVIRONMENT}" == "testing" ]]; then
         base_url="//localhost:8088/"
       elif [[ "${KUDU_ENVIRONMENT}" == "production" ]]; then
-        base_url="https://kudulab.github.io/"
+        base_url="https://kudulab.io/"
       else
         echo "Unsupported KUDU_ENVIRONMENT=${KUDU_ENVIRONMENT}, exit 1"
         exit 1
