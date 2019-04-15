@@ -1,3 +1,7 @@
+### 0.2.4 (2019-Apr-15)
+
+Fix keywords and description
+
 ### 0.2.3 (2019-Apr-15)
 
 Added google analytics

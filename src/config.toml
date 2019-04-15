@@ -18,9 +18,9 @@ googleAnalytics = "UA-138356014-1"
 
 [params]
     #author = " Doe"
-    description = "John Doe's personal website"
+    description = "KuduLab - personal blog and open source projects"
 
-    keywords = "blog,developer,personal"
+    keywords = "blog,developer,continuous delivery,infrastructure,devops,IT,open source,gocd"
     # footercontent = "Enter a text here."
 
     dateformat = "January 2, 2006"
