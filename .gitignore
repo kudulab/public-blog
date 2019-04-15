@@ -1,3 +1,5 @@
 /node_modules/
 /quickstart/
-/resources/
+/src/resources/
+/releaser
+/src/public

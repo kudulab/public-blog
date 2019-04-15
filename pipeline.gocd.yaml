@@ -4,17 +4,63 @@ pipelines:
     label_template: "${git[:8]}"
     materials:
       git:
-        git: "git@git.ai-traders.com:www/public-blog.git"
-        branch: master
+        type: configrepo
     stages:
-      - build:
+      - test:
           clean_workspace: true
+          environment_variables:
+            KUDU_ENVIRONMENT: testing
           jobs:
-            build:
+            test:
               elastic_profile_id: w.c1.m1024.e5
               tasks:
-               - exec:
-                  command: /bin/bash
-                  arguments:
-                    - -c
-                    - "echo \"pipeline not created yet\" && exit 1"
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks generate
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks demo_host
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks test
+                - exec:
+                    run_if: any
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks cleanup
+      - release:
+          clean_workspace: true
+          jobs:
+            code:
+              elastic_profile_id: w.c1.m1024.e5
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks release
+      - publish:
+          clean_workspace: true
+          environment_variables:
+            KUDU_ENVIRONMENT: production
+          jobs:
+            publish:
+              elastic_profile_id: w.c1.m1024.e5
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks generate
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks publish

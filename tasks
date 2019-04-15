@@ -1,0 +1,85 @@
+#!/bin/bash
+
+set -e
+if [[ ! -f ./releaser ]];then
+  wget --quiet http://http.archive.ai-traders.com/releaser/1.0.3/releaser || { echo "cannot download releaser, but maybe not needed"; }
+fi
+source ./releaser
+releaser_init
+
+command="$1"
+case "${command}" in
+  set_version)
+      if [[ -n "$2" ]]; then
+        next_version="$2"
+        set_version_in_changelog "${changelog_file}" "${next_version}"
+      else
+        old_version=$(get_last_version_from_changelog "${changelog_file}")
+        next_version=$(bump_patch_version "${old_version}")
+        set_version_in_changelog "${changelog_file}" "${next_version}"
+      fi
+      exit $?
+      ;;
+  generate)
+      if [[ -z "${KUDU_ENVIRONMENT}" ]]; then
+        echo "KUDU_ENVIRONMENT is not set"
+        exit 1
+      fi
+      if [[ "${KUDU_ENVIRONMENT}" == "development" ]]; then
+        base_url="//workstation:8088/"
+      elif [[ "${KUDU_ENVIRONMENT}" == "testing" ]]; then
+        base_url="//localhost:8088/"
+      elif [[ "${KUDU_ENVIRONMENT}" == "production" ]]; then
+        base_url="https://kudulab.github.io/"
+      else
+        echo "Unsupported KUDU_ENVIRONMENT=${KUDU_ENVIRONMENT}, exit 1"
+        exit 1
+      fi
+      cd src
+      rm -rf public/*
+      ide "hugo --baseUrl=${base_url}"
+      ;;
+  demo_host)
+      docker run -d -p 8088:80 --name www-host\
+        -v "${PWD}/src/public":/usr/local/apache2/htdocs/\
+        httpd:2.4.29-alpine
+      exit $?
+      ;;
+  test)
+      time bats "$(pwd)/test/integration/bats"
+      exit $?
+      ;;
+  cleanup)
+      docker stop www-host; docker rm www-host
+      exit $?
+      ;;
+  release)
+      version=$(get_last_version_from_changelog "${changelog_file}")
+      if git tag | grep "${version}"; then
+        log_error "The last version from changelog was already git tagged: ${version}"
+        exit 1
+      fi
+      git tag ${version}
+      git push --tags
+      exit $?
+      ;;
+  publish)
+      git_ref=$(git log -1 --pretty='format:%H')
+      git clone git@github.com:kudulab/kudulab.github.io.git kudulab.github.io
+      cd kudulab.github.io
+      # remove everything but for .git directory
+      for a_file in *; do
+        rm -rf "${a_file}"
+      done
+      cp -r ../src/public/* .
+      git add .
+      git commit -m "generated from git ref: ${git_ref}"
+      git push
+      exit $?
+      ;;
+  *)
+      echo "Invalid command: '${command}'"
+      exit 1
+      ;;
+esac
+set +e
