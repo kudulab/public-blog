@@ -130,6 +130,7 @@ case "${command}" in
         rm -rf "${a_file}"
       done
       cp -r ../src/public/* .
+      echo "kudulab.io" > CNAME
       git add .
       git commit -m "generated from git ref: ${git_ref}" || true
       git push

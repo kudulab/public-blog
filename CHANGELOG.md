@@ -1,3 +1,7 @@
+### 0.2.2 (2019-Apr-15)
+
+Commit CNAME file at the root of github pages repo
+
 ### 0.2.1 (2019-Apr-15)
 
 Set https://kudulab.io as base url
