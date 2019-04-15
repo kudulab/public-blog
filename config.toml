@@ -1,4 +1,4 @@
-baseurl = "http://workstation:1313"
+baseurl = "https://kudulab.io"
 title = "KuduLab"
 
 theme = "hugo-coder"
