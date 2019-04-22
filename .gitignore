@@ -6,3 +6,4 @@
 /terraform/*.tfplan
 /terraform/.terraform
 /secret-ops
+/ops/

@@ -1,3 +1,7 @@
+### 0.3.0 (2019-Apr-22)
+
+Use public dojo images with terraform and hugo.
+
 ### 0.2.4 (2019-Apr-15)
 
 Fix keywords and description

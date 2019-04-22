@@ -1,15 +1,24 @@
 #!/bin/bash
 
-set -e
-if [[ ! -f ./releaser ]];then
-  wget --quiet http://http.archive.ai-traders.com/releaser/1.0.3/releaser || { echo "cannot download releaser, but maybe not needed"; }
+set -Eeuo pipefail
+
+RELEASER_VERSION="2.1.0"
+SECRET_OPS_VERSION="0.6.2"
+
+SECRET_OPS_FILE="ops/secret-ops"
+SECRET_OPS_TAR_FILE="ops/secret-ops-${SECRET_OPS_VERSION}.tar.gz"
+RELEASER_FILE="ops/releaser-${RELEASER_VERSION}"
+
+mkdir -p ops
+if [[ ! -f $RELEASER_FILE ]];then
+  wget --quiet -O $RELEASER_FILE https://github.com/kudulab/releaser/releases/download/${RELEASER_VERSION}/releaser
 fi
-source ./releaser
-if [[ ! -f ./secret-ops ]]; then
-  wget --quiet http://os2.ai-traders.com:6780/swift/v1/secret-ops/0.4.0/secret-ops || { echo "cannot download secret-ops"; }
+source $RELEASER_FILE
+if [[ ! -f $SECRET_OPS_TAR_FILE ]];then
+  wget --quiet -O $SECRET_OPS_TAR_FILE https://github.com/kudulab/secret-ops/releases/download/${SECRET_OPS_VERSION}/secret-ops.tar.gz
+  tar -xf $SECRET_OPS_TAR_FILE -C ops
 fi
-if [[ -f ./secret-ops ]]; then source ./secret-ops; fi
-releaser_init
+source $SECRET_OPS_FILE
 
 KUDU_SERVICE="www"
 
@@ -60,23 +69,23 @@ case "${command}" in
       dojo -c terraform/Dojofile "./tasks _set_dns"
       ;;
   generate_vault_token)
-      set -e
-      vault_token=$(vault token create -orphan -renewable=true -period=78h -policy=gocd -field token -metadata gocd_renew=true)
-      secured_token_gocd=$(encrypt_with_gocd2 "${vault_token}")
+      vault_token=$(vault token create -orphan -renewable=true -period=72h -policy=gocd -field token -metadata gocd_renew=true)
+      secured_token_gocd=$(secret_ops::encrypt_with_gocd_top "${vault_token}")
       echo "Generated token: ${vault_token} and encrypted by GoCD server"
-      echo "Replacing pipeline config with VAULT_TOKEN: ${secured_token_gocd}"
-      find . -name "*.gocd.yaml" -exec sed -i -E "s#VAULT_TOKEN\:.*#VAULT_TOKEN: ${secured_token_gocd}#g" {} \;
+      secret_ops::insert_vault_token_gocd_yaml "${secured_token_gocd}"
       ;;
   set_version)
       if [[ -n "$2" ]]; then
         next_version="$2"
-        set_version_in_changelog "${changelog_file}" "${next_version}"
       else
-        old_version=$(get_last_version_from_changelog "${changelog_file}")
-        next_version=$(bump_patch_version "${old_version}")
-        set_version_in_changelog "${changelog_file}" "${next_version}"
+        version=$(releaser::get_last_version_from_whole_changelog "${changelog_file}")
+        next_version=$(releaser::bump_patch_version "${version}")
       fi
-      exit $?
+      releaser::set_version_in_changelog "${changelog_file}" "${next_version}" "${3:-}"
+      ;;
+  live_preview)
+      cd src
+      dojo "hugo server -D --bind 0.0.0.0 --baseURL http://workstation:1313"
       ;;
   generate)
       if [[ -z "${KUDU_ENVIRONMENT}" ]]; then
@@ -95,21 +104,18 @@ case "${command}" in
       fi
       cd src
       rm -rf public/*
-      ide "hugo --baseUrl=${base_url}"
+      dojo "hugo --baseUrl=${base_url}"
       ;;
   demo_host)
       docker run -d -p 8088:80 --name www-host\
         -v "${PWD}/src/public":/usr/local/apache2/htdocs/\
         httpd:2.4.29-alpine
-      exit $?
       ;;
   test)
       time bats "$(pwd)/test/integration/bats"
-      exit $?
       ;;
   cleanup)
       docker stop www-host; docker rm www-host
-      exit $?
       ;;
   release)
       version=$(get_last_version_from_changelog "${changelog_file}")
@@ -119,7 +125,6 @@ case "${command}" in
       fi
       git tag ${version}
       git push --tags
-      exit $?
       ;;
   publish)
       git_ref=$(git log -1 --pretty='format:%H')
@@ -134,7 +139,6 @@ case "${command}" in
       git add .
       git commit -m "generated from git ref: ${git_ref}" || true
       git push
-      exit $?
       ;;
   *)
       echo "Invalid command: '${command}'"

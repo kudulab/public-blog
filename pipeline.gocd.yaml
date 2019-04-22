@@ -1,3 +1,4 @@
+format_version: 3
 pipelines:
   public-blog:
     group: www
