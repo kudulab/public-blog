@@ -118,13 +118,8 @@ case "${command}" in
       docker stop www-host; docker rm www-host
       ;;
   release)
-      version=$(get_last_version_from_changelog "${changelog_file}")
-      if git tag | grep "${version}"; then
-        log_error "The last version from changelog was already git tagged: ${version}"
-        exit 1
-      fi
-      git tag ${version}
-      git push --tags
+      releaser::verify_release_ready
+      releaser::git_tag_from_changelog
       ;;
   publish)
       git_ref=$(git log -1 --pretty='format:%H')
