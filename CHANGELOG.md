@@ -1,3 +1,8 @@
+### 0.4.0 (2019-Apr-24)
+
+ * updated css to deal with long post titles
+ * added first post about building hugo blog
+
 ### 0.3.0 (2019-Apr-22)
 
 Use public dojo images with terraform and hugo.
