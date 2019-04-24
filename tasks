@@ -43,12 +43,12 @@ function read_from_vault_or_die {
   fi
 }
 
-function tf_apply {
+function tf_ops {
   operation=$1
 
   cd terraform/
   terraform init -backend-config path=terraform/kudu-${KUDU_SERVICE}
-  if [[ "${operation}" == "apply" ]]; then
+  if [[ "${operation}" == "create" ]]; then
     terraform plan -out="kudu_deployment.tfplan"
   elif [[ "${operation}" == "destroy" ]]; then
     terraform plan -out="kudu_deployment.tfplan" -destroy
@@ -59,7 +59,7 @@ function tf_apply {
 command="$1"
 case "${command}" in
   _set_dns)
-      tf_apply "apply"
+      tf_ops "create"
       ;;
   set_dns)
       # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from vault

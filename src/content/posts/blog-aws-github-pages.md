@@ -1,7 +1,7 @@
 +++
 date = "2019-04-24"
 title = "Hugo blog on gh-pages with terraform and AWS Route 53"
-description = "Hugo blog setup on github pages with terraform and AWS Route 53"
+description = "Walkthrough a Hugo blog setup on github pages with GoCD, Terraform, AWS Route 53, Dojo and Docker"
 images = ["aws_dns_zone.png"]
 math = "false"
 series = []
@@ -47,12 +47,12 @@ There are plenty of available solutions to meet above requirement. This is just 
   * To setup custom domain and manage the DNS records **as code**, we use **[Terraform](https://www.terraform.io/)** and **[AWS Route 53 DNS](https://aws.amazon.com/route53/)**
   * To define **operations as code** we use bash scripts
   * To define a sufficient **execution environment** of each operation **as code** we use **[Dojo](https://github.com/ai-traders/dojo)** together with [terraform-dojo](https://github.com/kudulab/docker-terraform-dojo) docker image and [hugo-dojo](https://github.com/kudulab/docker-hugo-dojo) docker image.
-  * To automate and visualize the lifecycle of the website, we execute them on **[GoCD](https://www.gocd.org/)** pipelines.
+  * To automate and visualize the lifecycle of the website, we execute it on **[GoCD](https://www.gocd.org/)** pipelines.
   * And finally to define the GoCD **pipelines as code** we use the **[YAML configuration plugin](https://github.com/tomzo/gocd-yaml-config-plugin)**
 
-# Walthrough the work
+# Walkthrough the work
 
-Now once we know all the components needed to build the website deployment, we can plan the work and get busy.
+Now once we know all the components needed to setup the website deployment, we can plan the work and get busy.
 At the high level we must do all of these tasks:
 
 1. Build a hugo website up to the point of generating a static site.
@@ -73,7 +73,7 @@ You can follow the [official guide](https://gohugo.io/getting-started/quick-star
 However, we recommend a different approach - use docker and [Dojo](https://github.com/ai-traders/dojo) to pull a suitable docker image just before hugo is needed. Although Dojo is a topic for another post, the two biggest benefits are
 
    * you don't need to install hugo on your host and all CI-agents, but rather install docker and [Dojo](https://github.com/ai-traders/dojo) just once for all the current and future projects you may be responsible for.
-   * the website project we are building now will have a **version-controlled reference** to an exact hugo environment which is required. So even if we rerun a task a year from now, we are guaranteed that the same tools are used when we first got it working.
+   * the website project we are building now will have a **version-controlled reference** to an exact hugo environment which is required. So even if we rerun a task a year from now, we are guaranteed, that the same tools will be used then, as now, when we got it working.
 
 With dojo setup becomes very simple because we have already published a functional [hugo-dojo](https://github.com/kudulab/docker-hugo-dojo) docker image.
 At the root of our website project run
@@ -112,13 +112,13 @@ hugo new site --force .
 ```
 (force is needed to ignore the existing `Dojofile` file)
 
-Then we need to choose and add the [theme](https://themes.gohugo.io/). If you want to manage the theme as git submodule, run this from the root of the project (not from the docker container):
+Then, we need to choose and add the [theme](https://themes.gohugo.io/). If you want to manage the theme as git submodule, run this from the root of the project (not from the docker container):
 
 ```bash
 git submodule add https://github.com/luizdepra/hugo-coder.git src/themes/hugo-coder
 ```
 
-Then configure hugo to use a theme, in `config.toml` add the name of the theme:
+Then, configure hugo to use a theme, in `config.toml` add the name of the theme:
 ```toml
 theme = 'hugo-coder'
 ```
@@ -282,7 +282,7 @@ pipelines:
                       - ./tasks cleanup
 ```
 
-By now we should have commited all files and pushed to git server.
+By now we should have committed all files and pushed to git server.
 Then to finish the pipeline setup, we should add configuration repository to the GoCD server using the [documented steps](https://docs.gocd.org/current/advanced_usage/pipelines_as_code.html#storing-pipeline-configuration-in-json).
 
 ## Deployment to github pages
@@ -293,7 +293,7 @@ We already have a task to generate the production site, which produces static si
 ```bash
 KUDU_ENVIRONMENT=production ./tasks generate
 ```
-So in order to deploy it, we only need to commit all the generated content into `kudulab.github.io` repository and push it to github, which will trigger github hosting to update content on `https://kudulab.github.io`.
+So in order to deploy it, we only need to commit all the generated content into **second** repository `kudulab.github.io` and push it to github, which will trigger github hosting to update content on `https://kudulab.github.io`.
 We can automate this operation in the `./tasks` script:
 
 ```bash
@@ -567,12 +567,12 @@ secure_variables:
 
 Converging DNS can be scripted in `./tasks` file with the following snippet:
 ```bash
-function tf_apply {
+function tf_ops {
   operation=$1
 
   cd terraform/
   terraform init -backend-config path=terraform/kudu-www
-  if [[ "${operation}" == "apply" ]]; then
+  if [[ "${operation}" == "create" ]]; then
     terraform plan -out="kudu_deployment.tfplan"
   elif [[ "${operation}" == "destroy" ]]; then
     terraform plan -out="kudu_deployment.tfplan" -destroy
@@ -583,7 +583,7 @@ function tf_apply {
 command="$1"
 case "${command}" in
   _set_dns)
-      tf_apply "apply"
+      tf_ops "create"
       ;;
   set_dns)
       # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from vault
@@ -664,8 +664,8 @@ publish)
 
 ## Configure Disqus
 
-It is very simple process - setup an account on https://disqus.com/
-and configure a new site in the discus admin panel. This will provide you with a site ID.
+It is a very simple process - setup an account on https://disqus.com/
+and configure a new site in the disqus admin panel. This will provide you with a site ID.
 
 Then in hugo, we just need to add the ID in `src/config.toml`
 ```
@@ -684,7 +684,10 @@ googleAnalytics = "your-id"
 ## Summary
 
 Starting from nothing, we have built a website with code, infrastructure and operations checked-in the source control.
-Now any changes can be introduced to production by git commits and running `git push`.
+Now any changes can be introduced to production by git commits and running `git push` and watching GoCD pipeline deploying the site:
+
+![GoCD pipeline](/images/blog_gocd_pipe.png)
+
 While it may seem like an overkill to apply all of these efforts for a simple website, we find that this set of practices is very resilient to external changes because we have locked version of practically every dependency of this project. In this repository we have nearly every piece which makes the website work and controls its lifecycle, this makes maintenance straightforward and project easier to share.
 
 Feel free to comment and ask questions, we'll certainly engage with you.
