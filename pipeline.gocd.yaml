@@ -72,7 +72,7 @@ pipelines:
           secure_variables:
             VAULT_TOKEN: "AES:bYwjpIz02AtPshnMBaBdnA==:BwACwa5fWInrHU2xXfyJlM2qFKk2lE9g+d5gGAFTl3sjg/sLdJqDfKW3Qki4vwfH"
           jobs:
-            publish:
+            provision:
               elastic_profile_id: w.c1.m1024.e5
               tasks:
                 - exec:

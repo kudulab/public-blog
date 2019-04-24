@@ -48,7 +48,6 @@ function tf_apply {
 
   cd terraform/
   terraform init -backend-config path=terraform/kudu-${KUDU_SERVICE}
-  terraform get
   if [[ "${operation}" == "apply" ]]; then
     terraform plan -out="kudu_deployment.tfplan"
   elif [[ "${operation}" == "destroy" ]]; then
@@ -75,13 +74,8 @@ case "${command}" in
       secret_ops::insert_vault_token_gocd_yaml "${secured_token_gocd}"
       ;;
   set_version)
-      if [[ -n "$2" ]]; then
-        next_version="$2"
-      else
-        version=$(releaser::get_last_version_from_whole_changelog "${changelog_file}")
-        next_version=$(releaser::bump_patch_version "${version}")
-      fi
-      releaser::set_version_in_changelog "${changelog_file}" "${next_version}" "${3:-}"
+      set +u
+      releaser::bump_changelog_version "$2" "$3"
       ;;
   live_preview)
       cd src
