@@ -1,3 +1,6 @@
+### 0.5.0 (2019-May-03)
+ * added blog post about GoCD preflight API
+
 ### 0.4.0 (2019-Apr-24)
 
  * updated css to deal with long post titles
