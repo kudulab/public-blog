@@ -1,3 +1,6 @@
+### 0.5.1 (2019-May-03)
+ * fix error in the post due to wrong branch merged
+
 ### 0.5.0 (2019-May-03)
  * added blog post about GoCD preflight API
 
