@@ -79,7 +79,7 @@ case "${command}" in
       ;;
   live_preview)
       cd src
-      dojo "hugo server -D --bind 0.0.0.0 --baseURL http://workstation:1313"
+      dojo "hugo server -D --bind 0.0.0.0 --baseURL http://localhost:1313"
       ;;
   generate)
       if [[ -z "${KUDU_ENVIRONMENT}" ]]; then
