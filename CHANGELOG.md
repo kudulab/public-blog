@@ -1,3 +1,6 @@
+### 0.6.0 (2019-Sep-19)
+ * added blog post about EC2 and Ansible
+
 ### 0.5.1 (2019-May-03)
  * fix error in the post due to wrong branch merged
 
