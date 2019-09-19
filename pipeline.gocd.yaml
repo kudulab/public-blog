@@ -13,7 +13,8 @@ pipelines:
             KUDU_ENVIRONMENT: testing
           jobs:
             test:
-              elastic_profile_id: w.c1.m1024.e5
+              resources:
+                - docker
               tasks:
                 - exec:
                     command: /bin/bash
@@ -40,7 +41,8 @@ pipelines:
           clean_workspace: true
           jobs:
             code:
-              elastic_profile_id: w.c1.m1024.e5
+              resources:
+                - docker
               tasks:
                 - exec:
                     command: /bin/bash
@@ -53,7 +55,8 @@ pipelines:
             KUDU_ENVIRONMENT: production
           jobs:
             publish:
-              elastic_profile_id: w.c1.m1024.e5
+              resources:
+                - docker
               tasks:
                 - exec:
                     command: /bin/bash
@@ -70,10 +73,11 @@ pipelines:
           environment_variables:
             KUDU_ENVIRONMENT: production
           secure_variables:
-            VAULT_TOKEN: "AES:bYwjpIz02AtPshnMBaBdnA==:BwACwa5fWInrHU2xXfyJlM2qFKk2lE9g+d5gGAFTl3sjg/sLdJqDfKW3Qki4vwfH"
+            VAULT_TOKEN: "AES:06TNFCfMk+AF2mUAHZTzCA==:zF5EDiXQiTe0cabTWyZlWLpMhbJYYKGjPCbIOwwbqxk="
           jobs:
             provision:
-              elastic_profile_id: w.c1.m1024.e5
+              resources:
+                - docker
               tasks:
                 - exec:
                     command: /bin/bash
