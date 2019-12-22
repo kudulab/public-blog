@@ -55,6 +55,14 @@ function tf_ops {
   terraform apply kudu_deployment.tfplan
 }
 
+function verify_submodules_cloned {
+  submodules_refs=$(git submodule status | awk '{print $3}')
+  if [[ "${submodules_refs}" == "" ]]; then
+    echo "Error! Git submodules not cloned"
+    exit 1
+  fi
+}
+
 command="$1"
 case "${command}" in
   _set_dns)
@@ -79,6 +87,7 @@ case "${command}" in
       releaser::bump_changelog_version "$2" "$3"
       ;;
   live_preview)
+      verify_submodules_cloned
       cd src
       dojo "hugo server -D --bind 0.0.0.0 --baseURL http://localhost:1313"
       ;;
@@ -102,6 +111,7 @@ case "${command}" in
       dojo "hugo --baseUrl=${base_url}"
       ;;
   demo_host)
+      verify_submodules_cloned
       docker run -d -p 8088:80 --name www-host\
         -v "${PWD}/src/public":/usr/local/apache2/htdocs/\
         httpd:2.4.29-alpine

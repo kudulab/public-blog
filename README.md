@@ -6,6 +6,13 @@ A post describing this setup - https://kudulab.io/posts/blog-aws-github-pages/
 
 ## Workflow
 
+1. Be sure to clone this repository with git submodules:
+```
+# If it's the first time you checkout a repo:
+git submodule update --init --recursive
+# otherwise:
+git submodule update --recursive
+```
 1. Start live preview with `./tasks live_preview`.
 1. Add post in `src/content/posts/`
 1. Run `./tasks set_version 0.X.0` and fill-in the changelog.
