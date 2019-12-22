@@ -68,19 +68,3 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks publish
-      - dns:
-          clean_workspace: true
-          environment_variables:
-            KUDU_ENVIRONMENT: production
-          secure_variables:
-            VAULT_TOKEN: "AES:06TNFCfMk+AF2mUAHZTzCA==:zF5EDiXQiTe0cabTWyZlWLpMhbJYYKGjPCbIOwwbqxk="
-          jobs:
-            provision:
-              resources:
-                - docker
-              tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks set_dns
