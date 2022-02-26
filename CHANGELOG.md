@@ -1,3 +1,6 @@
+### 0.7.0 (2022-Feb-26)
+ * added blog post about Dojo and Colima
+
 ### 0.6.0 (2019-Sep-19)
  * added blog post about EC2 and Ansible
 

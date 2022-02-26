@@ -9,8 +9,10 @@ A post describing this setup - https://kudulab.io/posts/blog-aws-github-pages/
 1. Be sure to clone this repository with git submodules:
 ```
 # If it's the first time you checkout a repo:
+git submodule sync
 git submodule update --init --recursive
 # otherwise:
+git submodule sync
 git submodule update --recursive
 ```
 1. Start live preview with `./tasks live_preview`.
@@ -20,7 +22,7 @@ git submodule update --recursive
 
 ## License
 
-Copyright 2019 Ewa Czechowska, Tomasz Sętkowski
+Copyright 2019-2022 Ava Czechowska, Tom Setkowski
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

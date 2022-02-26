@@ -2,7 +2,7 @@
 
 set -Eeo pipefail
 
-RELEASER_VERSION="2.1.0"
+RELEASER_VERSION="2.1.3"
 SECRET_OPS_VERSION="0.8.0"
 
 SECRET_OPS_FILE="ops/secret-ops"
@@ -61,6 +61,21 @@ function verify_submodules_cloned {
     echo "Error! Git submodules not cloned"
     exit 1
   fi
+}
+
+function setup_github_credentials {
+  if [ -z "$GITHUB_CREDENTIALS" ]; then
+    echo "Error: GITHUB_CREDENTIALS not set" >&2
+    exit 1
+  fi
+  # GITHUB_CREDENTIALS should be in format of account-name:api-key
+
+  # example HTTPS URL: https://github.com/user/repo.git
+  # example SSH URL: git@github.com:user/repo.git
+  OLD_URL=$(git remote get-url origin)
+  NEW_URL=$(echo $OLD_URL | sed "s|git@github.com:|https://$GITHUB_CREDENTIALS@github.com/|g")
+  git remote set-url origin $NEW_URL
+  echo "GitHub new remote was set"
 }
 
 command="$1"
@@ -124,6 +139,7 @@ case "${command}" in
       ;;
   release)
       releaser::verify_release_ready
+      setup_github_credentials
       releaser::git_tag_from_changelog
       ;;
   publish)
@@ -136,6 +152,7 @@ case "${command}" in
       done
       cp -r ../src/public/* .
       echo "kudulab.io" > CNAME
+      setup_github_credentials
       git add .
       git commit -m "generated from git ref: ${git_ref}" || true
       git push

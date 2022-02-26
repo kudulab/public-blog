@@ -1,0 +1,94 @@
+version: 2.1
+
+workflows:
+  # Environment variables required in CircleCI environment:
+  #  - GITHUB_CREDENTIALS
+  public-blog:
+    jobs:
+      - test
+      - release:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+      - publish:
+          requires:
+            - release
+          filters:
+            branches:
+              only: master
+
+jobs:
+  test:
+    environment:
+      KUDU_ENVIRONMENT: testing
+    executor: platform
+    steps:
+      - setup
+      - run: git submodule sync
+      - run: git submodule update --init --recursive
+      - run:
+          name: Install dojo
+          command: |
+            version="0.10.5"
+            wget -O /tmp/dojo https://github.com/kudulab/dojo/releases/download/${version}/dojo_linux_amd64
+            chmod +x /tmp/dojo
+            sudo mv /tmp/dojo /usr/bin/dojo
+      - run:
+          command: sudo git clone https://github.com/bats-core/bats-core /opt/bats-core
+      - run:
+          command: sudo git clone https://github.com/bats-core/bats-assert /opt/bats-assert
+      - run:
+          command: sudo git clone https://github.com/bats-core/bats-support /opt/bats-support
+      - run:
+          command: ./tasks generate
+      - run:
+          command: ./tasks demo_host
+      - run:
+          command: ./tasks test
+      - run:
+          command: ./tasks cleanup
+          when: always
+
+  release:
+    executor: platform
+    steps:
+      - setup
+      - run:
+          command: ./tasks release
+
+  publish:
+    environment:
+      KUDU_ENVIRONMENT: production
+    executor: platform
+    steps:
+      - setup
+      - run: git submodule sync
+      - run: git submodule update --init --recursive
+      - run:
+          name: Install dojo
+          command: |
+            version="0.10.5"
+            wget -O /tmp/dojo https://github.com/kudulab/dojo/releases/download/${version}/dojo_linux_amd64
+            chmod +x /tmp/dojo
+            sudo mv /tmp/dojo /usr/bin/dojo
+      - run:
+          command: /bin/bash -c "git config --global user.email \"ewa@kudulab.io\""
+      - run:
+          command: /bin/bash -c "git config --global user.name \"xmik\""
+      - run:
+          command: ./tasks generate
+      - run:
+          command: ./tasks publish
+
+commands:
+  setup:
+    steps:
+      - checkout
+
+executors:
+  platform:
+    machine:
+      image: ubuntu-2004:202101-01
+    working_directory: ~/repo
