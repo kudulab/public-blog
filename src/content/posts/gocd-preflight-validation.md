@@ -5,7 +5,7 @@ description = "Walkthrough validating GoCD config-repos locally using new prefli
 images = []
 math = "false"
 series = []
-author = "Tomasz Sętkowski"
+author = "Tom Setkowski"
 +++
 
 In GoCD [19.2.0](https://www.gocd.org/releases/#19-2-0) [preflight API endpoint](https://api.gocd.org/current/#preflight-check-of-config-repo-configurations) was [merged](https://github.com/gocd/gocd/pull/5579), which allows to validate local GoCD configuration files (e.g. [YAML](https://github.com/tomzo/gocd-yaml-config-plugin), [JSON](https://github.com/tomzo/gocd-json-config-plugin)) before submitting them to source control.

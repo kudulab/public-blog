@@ -5,7 +5,7 @@ description = "Walkthrough a Hugo blog setup on github pages with GoCD, Terrafor
 images = ["aws_dns_zone.png"]
 math = "false"
 series = []
-author = "Tomasz Sętkowski"
+author = "Tom Setkowski"
 +++
 
 This is a self-referential post about deploying a personal blog on github pages.

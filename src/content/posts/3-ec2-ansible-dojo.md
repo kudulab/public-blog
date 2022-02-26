@@ -4,7 +4,7 @@ title = "EC2 instance with Terraform and Ansible"
 description = "Walkthrough on how to deploy and provision an AWS EC2 instance using Terraform, Ansible, Dojo and Docker"
 math = "false"
 series = []
-author = "Ewa Czechowska"
+author = "Ava Czechowska"
 +++
 
 In this post we explain how to deploy an AWS EC2 instance using Terraform and then provision it using Ansible. Those tasks will be performed in multiple [Dojo](https://github.com/kudulab/dojo) docker images.

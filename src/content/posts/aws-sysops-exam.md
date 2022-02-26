@@ -4,7 +4,7 @@ title = "Getting AWS SysOps Administrator certified"
 description = "My recommendations for learning AWS and passing the SysOps Admin exam"
 math = "false"
 series = []
-author = "Tomasz Sętkowski"
+author = "Tom Setkowski"
 +++
 
 In July 2019, I've passed the [AWS Certified SysOps Administrator - Associate](https://www.certmetrics.com/amazon/public/badge.aspx?i=3&t=c&d=2019-07-17&ci=AWS00888387). I decided to share my experiences leading to it, because while there is a lot of resources for learning AWS, choosing the time-efficient ones requires some extra effort. While I am not an expert in AWS (with just one certificate), my learning path was quite smooth. I learned a lot in a short time, then passed the exam with a high score of `973/1000`, which is what many people could aim for. I will briefly explain my approach and resources I used so that you can also enjoy your path to AWS certificate.
