@@ -42,11 +42,11 @@ googleAnalytics = "UA-138356014-1"
     # Custom CSS
     custom_css = []
 
-    author_tom = "Tomasz Sętkowski"
+    author_tom = "Tom Setkowski"
     tom_info = "DevOps | Software Developer"
     tom_avatarurl = "/images/tom_avatar.png"
 
-    author_ewa = "Ewa Chechowska"
+    author_ewa = "Ava Czechowska"
     ewa_info = "DevOps Engineer"
     ewa_avatarurl = "/images/ewa_avatar.png"
 

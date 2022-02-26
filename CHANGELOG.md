@@ -1,3 +1,6 @@
+### 0.7.1 (2022-Feb-26)
+ * update names and links
+
 ### 0.7.0 (2022-Feb-26)
  * added blog post about Dojo and Colima
 

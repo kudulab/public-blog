@@ -8,6 +8,6 @@ Github:
   - User: ai-traders
     Repo: LiGet
     Description: NuGet server
-  - User: ai-traders
+  - User: kudulab
     Repo: dojo
-    Description: Build environment in docker
+    Description: Development environment in Docker
