@@ -55,6 +55,9 @@ jobs:
     executor: platform
     steps:
       - setup
+      - add_ssh_keys:
+          fingerprints:
+            - "39:55:28:94:70:76:62:45:c6:b2:76:6b:13:52:65:f5"
       - run:
           command: ./tasks release
 
@@ -79,6 +82,9 @@ jobs:
           command: /bin/bash -c "git config --global user.name \"xmik\""
       - run:
           command: ./tasks generate
+      - add_ssh_keys:
+          fingerprints:
+            - "39:55:28:94:70:76:62:45:c6:b2:76:6b:13:52:65:f5"
       - run:
           command: ./tasks publish
 
