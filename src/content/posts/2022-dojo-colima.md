@@ -10,7 +10,7 @@ author = "Ava & Tom"
 
 We wrote this post because of the recent [update to the Docker Desktop licensing](https://docs.docker.com/desktop/). [Dojo](https://github.com/kudulab/dojo/), a CLI tool that we wrote, uses Docker and Docker-Compose. As many organisations are moving away from Docker Desktop, we'd like to help you continue using Dojo while staying compliant with the licenses. The proposed solution focuses on [Colima](https://github.com/abiosoft/colima).
 
-## Are licence updates applicable to you?
+## Are license updates applicable to you?
 
 First, **if you use Docker on Linux, this situation does not concern you** (see: [source](https://www.docker.com/blog/looking-for-a-docker-alternative-consider-this/)). Although, it might be useful to know that there are plans to build Docker Desktop for Linux. More details available at [https://www.docker.com/blog](https://www.docker.com/blog/accelerating-new-features-in-docker-desktop/). However, if you use **Mac or Windows**, it's possible that you're using Docker Desktop.
 
