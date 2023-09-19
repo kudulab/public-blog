@@ -1,3 +1,6 @@
+### 0.8.0 (2023-Sep-19)
+ * added blog post about Terraform license change to BSL
+
 ### 0.7.1 (2022-Feb-26)
  * update names and links
 
