@@ -20,6 +20,12 @@ git submodule update --recursive
 1. Run `./tasks set_version 0.X.0` and fill-in the changelog.
 1. `git push` to master to deploy.
 
+## CICD Pipeline
+
+In order for the CICD Pipeline to work, you need:
+* to add an environment variable `GITHUB_CREDENTIALS` into CircleCI configuration. Please set its value to a value of github token, with the `repo` rights. This is needed for the `release` and `publish` stages of the CICD pipeline.
+* to generate a 'Deploy Key' through the CircleCI configuration, under SSH Keys. The read-only one is enough. This is needed to checkout the git repository on CircleCI.
+
 ## License
 
 Copyright 2019-2022 Ava Czechowska, Tom Setkowski
