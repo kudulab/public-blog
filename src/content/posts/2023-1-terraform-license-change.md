@@ -1,11 +1,11 @@
 +++
 date = "2023-09-19"
-title = "Terraform license updated  to Business Source License (BSL)"
+title = "Terraform license updated to Business Source License (BSL)"
 description = "A quick guide on how to navigate the situation of Terraform having a new license"
 images = []
 math = "false"
 series = []
-author = "Ava & Tom"
+author = "Ava"
 +++
 
 You may have noticed the recent changes around Terraform licensing. This post explains the current situation and who is affected.
