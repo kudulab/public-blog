@@ -44,11 +44,11 @@ googleAnalytics = "UA-138356014-1"
 
     author_tom = "Tom Setkowski"
     tom_info = "DevOps | Software Developer"
-    tom_avatarurl = "/images/tom_avatar.png"
+    tom_avatarurl = "/images/2023-tom.jpg"
 
     author_ewa = "Ava Czechowska"
     ewa_info = "DevOps Engineer"
-    ewa_avatarurl = "/images/ewa_avatar.png"
+    ewa_avatarurl = "/images/2023-ava.jpg"
 
 [taxonomies]
   series = "series"

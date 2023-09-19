@@ -1,3 +1,6 @@
+### 0.8.1 (2023-Sep-19)
+ * added new avatars
+
 ### 0.8.0 (2023-Sep-19)
  * added blog post about Terraform license change to BSL
 
