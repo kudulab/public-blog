@@ -12,16 +12,16 @@ You may have noticed the recent changes around Terraform licensing. This post ex
 
 ## The one-git-commit change
 
-It all started with [this git commit](https://github.com/hashicorp/terraform/commit/b145fbcaadf0fa7d0e7040eac641d9aef2a26433) on 10th August 2023.
+It all started with [this git commit](https://github.com/hashicorp/terraform/commit/b145fbcaadf0fa7d0e7040eac641d9aef2a26433) on 11th August 2023.
 
-![](../../static/images/2023-1-commit.png)
-
+![The git commit with the Terraform license change](/images/2023-1-commit.png)
 
 This commit changed the license of Terraform from MPL (Mozilla Public License) to BSL (Business Source License). What does it mean?
 
 ## The consequences
 
 There are many consequences of that license change. Some Terraform users will not be affected:
+
 * The license change is not retroactive. This means all source code and releases prior to the change remain under the MPL 2.0 license.
 * You can still use Terraform in non-production environments. All non-production use of BSL licensed HashiCorp products is permitted.
 * If you are a consultant, you can still help your clients with their own use of BSL licensed HashiCorp products for their production environment.
@@ -35,11 +35,11 @@ Read more at https://www.hashicorp.com/license-faq and https://www.hashicorp.com
 
 The license change has lead to the creation of the [OpenTF Manifesto](https://opentf.org/). OpenTF Manifesto's "goal is to ensure Terraform remains truly open source and proposes returning it to a fully open license". The main plan is to convince HashiCorp to switch Terraform back to an open-source license. And there is a fallback plan. If HashiCorp is unwilling to switch back, OpenTF Manifesto proposes to fork the legacy MPL-licensed Terraform and maintain the fork in the foundation. The fork was already created and is available on GitHub at [OpenTF](https://github.com/opentffoundation/opentf).
 
-[OpenTF](https://github.com/opentffoundation/opentf) is a fork of Terraform and is licensed under Mozilla Public License v2.0 (which is the same license as Terraform was using until the 10th August 2023 git commit).
+[OpenTF](https://github.com/opentffoundation/opentf) is a fork of Terraform and is licensed under Mozilla Public License v2.0 (which is the same license as Terraform was using until the 11th August 2023 git commit).
 
 Read more at https://opentf.org/ or take a look at the strong principles proposed by OpenTF:
 
-![](../../static/images/2023-1-opentf-principles.png)
+![OpenTF Principles](/images/2023-1-opentf-principles.png)
 
 
 ## Conclusion
@@ -52,12 +52,12 @@ There are **many similar stories** that come to mind. Let's take [Hudson](https:
 
 Time will tell whether the OpenTF manifesto succeeds and Terraform becomes back again open-source, or whether we will need to embrace the new reality after the warm 9 years.
 
-![](../../static/images/2023-1-jenkins.png)
+![Google search result of Jenkins CICD](/images/2023-1-jenkins.png)
 
-![](../../static/images/2023-1-hudson.png)
-
+![Google search result of Hudson CICD](/images/2023-1-hudson.png)
 
 
 Related articles:
+
 * https://blog.gruntwork.io/the-future-of-terraform-must-be-open-ab0b9ba65bca
 * https://www.forbes.com/sites/rscottraynovich/2023/08/17/hashicorp-licensing-firestorm-fuels-open-source-debate/?sh=25c16c3023fc
