@@ -31,15 +31,17 @@ The main difference is that organizations providing competitive offerings to Has
 Read more at https://www.hashicorp.com/license-faq and https://www.hashicorp.com/blog/hashicorp-adopts-business-source-license.
 
 
-## OpenTF Manifesto and the open-source Terraform fork
+## OpenTofu Manifesto and the open-source Terraform fork
 
-The license change has lead to the creation of the [OpenTF Manifesto](https://opentf.org/). OpenTF Manifesto's "goal is to ensure Terraform remains truly open source and proposes returning it to a fully open license". The main plan is to convince HashiCorp to switch Terraform back to an open-source license. And there is a fallback plan. If HashiCorp is unwilling to switch back, OpenTF Manifesto proposes to fork the legacy MPL-licensed Terraform and maintain the fork in the foundation. The fork was already created and is available on GitHub at [OpenTF](https://github.com/opentffoundation/opentf).
+*Update 23.09.2023: The manifesto was originally called OpenTF Manifesto and the Terraform fork - OpenTF. Both were then renamed to OpenTofu and placed under the oversight of The Linux Foundation. Read more [here](https://www.theregister.com/2023/09/20/terraform_fork_opentf_opentofu/).*
 
-[OpenTF](https://github.com/opentffoundation/opentf) is a fork of Terraform and is licensed under Mozilla Public License v2.0 (which is the same license as Terraform was using until the 11th August 2023 git commit).
+The license change has lead to the creation of the [OpenTofu Manifesto](https://opentofu.org/manifesto). The manifesto's "goal is to ensure Terraform remains truly open source and proposes returning it to a fully open license". The main plan is to convince HashiCorp to switch Terraform back to an open-source license. And there is a fallback plan. If HashiCorp is unwilling to switch back, OpenTF Manifesto proposes to fork the legacy MPL-licensed Terraform and maintain the fork in the foundation. The fork was already created and is available on GitHub at [OpenTofu](https://github.com/opentofu/opentofu/).
 
-Read more at https://opentf.org/ or take a look at the strong principles proposed by OpenTF:
+OpenTofu is a fork of Terraform and is licensed under Mozilla Public License v2.0 (which is the same license as Terraform was using until the 11th August 2023 git commit).
 
-![OpenTF Principles](/images/2023-1-opentf-principles.png)
+Read more at https://opentofu.org or take a look at the strong principles proposed by OpenTofu:
+
+![OpenTofu Principles](/images/2023-1-opentf-principles.png)
 
 
 ## Conclusion
@@ -50,7 +52,7 @@ Secondly, the **BSL terms are quite vague** - it's not fully transparent what "c
 
 There are **many similar stories** that come to mind. Let's take [Hudson](https://en.wikipedia.org/wiki/Hudson_(software)) as one example. Hudson was a Continuous Integration tool. Then, Hudson was trademarked and this has lead to the creation of an open-source fork of Hudson. (There is a dispute on which one was fork of which). That fork is [Jenkins](https://en.wikipedia.org/wiki/Jenkins_(software)), which continues to be a widely-known and used CI tool, while Hudson is rarely mentioned anymore. Another interesting story about handling a similar problem in a different way is about [Docker and Moby](https://thenewstack.io/what-is-the-moby-project/).
 
-Time will tell whether the OpenTF manifesto succeeds and Terraform becomes back again open-source, or whether we will need to embrace the new reality after the warm 9 years.
+Time will tell whether the OpenTofu manifesto succeeds and Terraform becomes back again open-source, or whether we will need to embrace the new reality after the warm 9 years.
 
 ![Google search result of Jenkins CICD](/images/2023-1-jenkins.png)
 
