@@ -1,3 +1,6 @@
+### 0.9.0 (2023-Sep-29)
+ * added blog post about Terraform vs AWS CDK vs AWS CFN
+
 ### 0.8.1 (2023-Sep-19)
  * added new avatars
 
