@@ -255,6 +255,7 @@ $ aws cloudformation describe-stack-events --stack-name s3-bucket{
 ```
 
 The output above is long and it indicates that
+
 * it was indeed the S3 Bucket that caused a failure
 ```
 The following resource(s) failed to create: [Bucket]
@@ -404,6 +405,7 @@ $ terraform plan
 ```
 
 You can see that the output from the `terraform plan` command
+
 * shows the exact specific error: `Error: expected length of bucket to be in the range (0 - 63)`
 * does not require to run any other commands
 * is not long
@@ -433,6 +435,7 @@ Resources:
 Then, we deploy the CFN stack with the CLI command `aws cloudformation deploy`. The 2 AWS resources are now created.
 
 Then, we can detect stack drift using either of the two options:
+
 * option 1 - using CLI commands
 * option 2 - using AWS Management Console
 
