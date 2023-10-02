@@ -1,7 +1,7 @@
 +++
-date = "2023-09-TODO"
-title = "TODO"
-description = "TODO"
+date = "2023-10-02"
+title = "Terraform vs AWS CloudFormation vs AWS CDK"
+description = "Comparison of the popular Infrastructure as code tools, with hands-on proofs of concept"
 images = []
 math = "false"
 series = []
@@ -9,6 +9,7 @@ author = "Ava"
 +++
 
 As [Wikipedia](https://en.wikipedia.org/wiki/Infrastructure_as_code) explains:
+
 > Infrastructure as code (IaC) is the process of managing and provisioning computer data centers through machine-readable definition files, rather than physical hardware configuration or interactive configuration tools.
 
 IaC is one of the DevSecOps practices. With IaC you can manage your infrastructure (bare metal, virtual machines, containers, databases, networking services and other resources) in a similar way as you would manage the code of any other project (e.g. a .NET or Java application). It literally means that you can define your infrastructure as a bunch of text files.
@@ -16,50 +17,59 @@ IaC is one of the DevSecOps practices. With IaC you can manage your infrastructu
 
 ## Benefits of IaC
 There are many benefits of infrastructure as code:
+
   * **Automation** - you no longer have to manually log into the AWS Management Console or Azure Portal or other GUI provided by your infrastructure provider. Instead, you can use CLI tools and run the same CLI command to deploy or delete your infrastructure. This means that you can now **manage your infrastructure using CICD pipelines** and have a well-defined software delivery cycle for your IaC, including tests, peer reviews, security scans, etc. IaC enables you to fail fast, thanks to IaC linters (e.g. tflint) and other static analysis tools. Automation means **reliable and repeatable processes**. In contrast, performing operations manually (creating, updating, destroying infrastructure resources) is prone to human errors, such as forgetting about a step or committing a typo (which then in turn may lead to a deployment targeting the wrong cloud region).
   * **Auditability and record keeping** - putting your infrastructure in a version control system (such as git) allows you to see a list of commits (and git tags) and helps you identify who did what change and when.
   * **Documentation** - all the infrastructure resources needed to set up an environment (to provision your infrastructure) could be stored in a git repository. Without that, you'd need to perform some kind of discovery to find out that information - e.g. look for an architecture diagram or documentations or talk to a person who managed an environment previously.
   * **Removed dependency on GUIs** - usually the cloud providers and other infrastructure providers offer some kind of a GUI (e.g. AWS Management Console or Azure Portal). The GUI may often change and you usually don't have the control over which GUI version you use.
   * **Scalability** - it's much easier to create 500 virtual machines using code than doing it manually.
-  * **Environment Consistency and easy Reproduction of an environment** - as the [12 Factor App](https://12factor.net/dev-prod-parity) recommends, we should keep development, staging, and production environments as similar as possible. With IaC it is easier to parameterise your code, so that the differences between environments are minimal. Also, sometimes, you may want to create a representative copy of our environment for troubleshooting or experimenting purposes. It's a good way to avoid affecting the production environment. Using a IaC tool makes is easier to replicate an environment, or keep multiple environments in sync, and it is generally faster (than the manual way).
+  * **Environment consistency and easy reproduction of an environment** - as the [12 Factor App](https://12factor.net/dev-prod-parity) recommends, we should keep development, staging, and production environments as similar as possible. With IaC it is easier to parameterise your code, so that the differences between environments are minimal. Also, sometimes, you may want to create a representative copy of our environment for troubleshooting or experimenting purposes. It's a good way to avoid affecting the production environment. Using a IaC tool makes is easier to replicate an environment, or keep multiple environments in sync, and it is generally faster (than the manual way).
   * **Drift Detection** - you can use a IaC tool to see what changes were done to your infrastructure outside of the well-defined SDLC (either manually, or using a unapproved script).
   * **Security and Governance** - it’s easier to ensure security standards are met with IaC. You can use tools such as tfsec or AWS CloudFormation Guard and make them run even before the infrastructure is created.
 
 ## Tools comparison
 
 Let's compare the most commonly used infrastructure as code tools:
+
 * [Terraform](https://www.terraform.io/)
 * [AWS CloudFormation](https://aws.amazon.com/cloudformation/faqs/) (AWS CFN)
 * [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/home.html)
 
-While the above tools fullfil the same purpose (allow us to treat and manage infrastructure as code), they are vastly different in how they work, their workflows, integrations, code logic etc. It's important to note that while Terraform and AWS CloudFormation are two separate tools, **AWS CDK is built on top of AWS CloudFormation**. This means, that when you use AWS CDK, you also use AWS CloudFormation. AWS CDK just adds another layer to the tool. Read more here about how [AWS CDK is powered by AWS CloudFormation](https://aws.amazon.com/cdk/features/)
+While the above tools fullfil the same purpose (they allow us to treat and manage infrastructure as code), they are vastly different in how they work, their workflows, integrations, code logic, etc. It's important to note that while Terraform and AWS CloudFormation are two separate tools, **AWS CDK is built on top of AWS CloudFormation**. This means, that when you use AWS CDK, you also use AWS CloudFormation. AWS CDK just adds another layer to the tool. Read more here about how [AWS CDK is powered by AWS CloudFormation](https://aws.amazon.com/cdk/features/).
+
+AWS CDK appeals to people with development background as they see a familiar coding language and they attempt to apply the same code-architecture practices to infrastructure. Unfortunately, using a language like Python or Golang here, means that the infrastructure code is no longer fully declarative. With the declarative approach, the code represents the target future state. With the imperative approach, the code represents the steps needed to reach the target future state. AWS CDK provides an imperative interface, however, under the hood, it still uses the declarative framework - AWS CloudFormation. In result, AWS CDK is a mix of approaches.
 
 Below is a table detailing the main differences between the IaC tools.
 
 ### Main differences
+
 | Feature | AWS CloudFormation | AWS CDK | Terraform |
-|----------|-----------|----------| -- |
-| Language | YAML or JSON or AWS CloudFormation Designer - a GUI | TypeScript, Python, Java, .NET, or Go (in Developer Preview). | Hashicorp (HCL) syntax |
+| --- | --- | --- | --- |
+| Language | YAML or JSON or AWS CloudFormation Designer - a GUI | TypeScript, Python, Java, .NET, or Go (in Developer Preview) | Hashicorp (HCL) syntax |
 | Supported infrastructure  | AWS only (plus 3rd party modules to support e.g. monitoring or incident management; [link](https://aws.amazon.com/cloudformation/features/?pg=ln&sec=hs#extensibility))  | Same as AWS CloudFormation | Various clouds and PaaS integrations (e.g. AWS, Azure, GCP, Kubernetes, Alibaba Cloud. Find out about other Terraform providers [here](https://registry.terraform.io/browse/providers)) |
 | State management | Handled for you | Same as AWS CloudFormation | Needs to be configured by you (many options) |
 | Version management | You cannot choose which version of AWS CFN you're using (the history of changes is available [here](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/ReleaseHistory.html)) | Same as AWS CloudFormation | You can choose which version of Terraform and each Terraform provider you use (the history of changes is available [here](https://github.com/hashicorp/terraform/blob/main/CHANGELOG.md)) |
-| Pricing | [Not free](https://aws.amazon.com/cloudformation/pricing/), but also subjectively not expensive | Same as AWS CloudFormation | Fee |
+| Pricing | [Not free](https://aws.amazon.com/cloudformation/pricing/), but also subjectively not expensive | Same as AWS CloudFormation | Free |
 | License | It's one of many AWS services | Open-source | Until 11.08.2023 Terraform used be open-source, today it's under the BSL license, which really only impacts the Terraform competitors. Read more [here](https://kudulab.io/posts/2023-1-terraform-license-change/) |
 
 This leads to the following conclusions:
-* if you want to deploy infrastructure that is not AWS, go with Terraform
+
+* if you want to deploy infrastructure that includes more than AWS components, go with Terraform
+* if you want to use only AWS infrastructure, you could consider AWS CloudFormation or AWS CDK
 * if you want to use only AWS-provided tools, go with AWS CloudFormation or AWS CDK
 
 ### Other differences
+
 | Feature | AWS CloudFormation | AWS CDK | Terraform  |
-| -- | -- | -- | -- |
-| Troubleshooting | More complex than Terraform (see the Appendix) | It's possible to detect errors in code without creating any infrastructure, although CDK adds an additional layer of abstraction on top of CFN, so it's not unreasonable to expect problems at any of these layers and in result, one has to be familiar with both tools ([exampl1](https://awsmaniac.com/troubleshooting-aws-cdk-part-1-nested-stacks/), [example2](https://medium.com/@gwenleigh/week-8-troubleshooting-cdk-deploy-not-working-72ce59ab8293)) | It's possible to detect errors in code without creating any infrastructure |
-| State locking (Prevent multiple processes/people/pipelines from applying changes to your infrastructure at the same time) | Native support (Updating an IN_PROGRESS stack not permitted) |  Same as AWS CloudFormation | Native support (Can be configured with DynamoDB) |
+| --- | --- | --- | --- |
+| Troubleshooting | More complex than Terraform (see the Appendix) | It's possible to detect errors in code without creating any infrastructure, although CDK adds an additional layer of abstraction on top of CFN, so it's not unreasonable to expect problems at any of these layers and in result, one has to be familiar with both tools ([example1](https://awsmaniac.com/troubleshooting-aws-cdk-part-1-nested-stacks/), [example2](https://medium.com/@gwenleigh/week-8-troubleshooting-cdk-deploy-not-working-72ce59ab8293)) | It's possible to detect errors in code without creating any infrastructure |
+| State locking (Prevent multiple processes/people/pipelines from applying changes to your infrastructure at the same time) | Native support (Updating an IN_PROGRESS stack not permitted) |  Same as AWS CloudFormation | Native support (Can be configured with DynamoDB or other backends) |
 | Preview your changes before actually applying them | Native support, but not a part of the default workflow. You can use [Change sets](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html) in [this way](https://theithollow.com/2018/01/22/introduction-aws-cloudformation-change-sets/). AWS recommends to [Create change sets before updating your stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html). | Native support, but not a part of the default workflow. See `cdk diff`. | Native support and a part of the default workflow. You first run `terraform plan` which shows the intended changes (the plan of the target infrastructure), and then `terraform apply` to actually deploy or delete the infrastructure. |
 | Drift detection (detect changes done to your infrastructure outside of the IaC tool). | Supported but limited. Limited, because (1) if a resource was deleted outside of CFN, you have to recreate it manually, (2) not all the resources are supported (e.g. SSM Parameter is not) (See the Appendix) | Supported with `cdk diff`, same limitations as AWS CloudFormation (also see the Appendix) | Supported by `terraform plan`. Part of the default workflow. (See the Appendix) |
 | Idempotency of the workflow (you can use the CLI commands and expect the same results) | Less idempotent than Terraform. (1) By default, when you create a new CFN stack and it fails, you have to delete the full stack - you cannot fix the error without deleting the stack. (2) There are multiple CLI commands available to create a CFN stack. The command `create-stack` can be used only once, while the command `deploy` can be used many times. These commands take different parameters (e.g. `--parameters` vs `--parameter-overrides`, `--on-failure`). There seems to be no `on-failure` option for `aws cloudformation deploy` command, so on the 1st time, if the stack fails, you have to delete it manually. | Easy idempotent command `cdk deploy`, however it does not offer the same confidence as Terraform commands do. (There is no possibility for this command to execute ChangeSets without creating them.  read more [here](https://github.com/aws/aws-cdk/issues/15495#issuecomment-881319185)). | Easy idempotent commands `terraform plan` and `terraform apply`. First, you create a plan for your infrastructure, then you apply the plan which creates the infrastructure. |
 | Modularity/re-useability | You can use just one YAML or JSON file or you can separate common components of your infrastructure into [nested stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html). You can also use modules. AWS recommends [using modules to reuse resource configurations](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html). You have to register the module in the account and region in which you want to use it. Otherwise, you end up with long CFN YAML or JSON files and repeated logic. | There are 3 levels of [constructs](https://docs.aws.amazon.com/cdk/v2/guide/constructs.html) and also stacks available. AWS recommends to [separate your application into multiple stacks](https://docs.aws.amazon.com/cdk/v2/guide/best-practices.html)  | Terraform natively supports multiple `.tf` files. You can use one or many `.tf` files. Additionally, you can use [Terraform modules](https://developer.hashicorp.com/terraform/language/modules). There are many open-source Terraform modules to choose from, e.g. [AWS Terraform Modules](https://registry.terraform.io/namespaces/terraform-aws-modules). |
 | Limits and quotas | Hard limits set by AWS: [max 200 Parameters and 500 resources](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html) per template. You can use nested templates as a workaround. |  (Same as AWS CloudFormation](https://docs.aws.amazon.com/cdk/v2/guide/stacks.html) | No such limits |
+| Support for deploying the infrastructure to multiple AWS accounts | Yes, with [StackSets](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html) | [Yes](https://aws.amazon.com/blogs/devops/cdk-credential-plugin/) | [Yes](https://medium.com/@aw.panda.aws/4-steps-to-deploy-to-multiple-aws-accounts-with-terraform-bbb00bb4e789) |
 
 The list above does is not exhaustive. There are other differences between the IaC tools.
 
@@ -67,15 +77,20 @@ The list above does is not exhaustive. There are other differences between the I
 
 You can manage your infrastructure, make it secure, and automate this process with any of the IaC tools. Each of the tools is going to have some **trade-offs**. For example, setting up the Terraform remote state, which takes some time and effort, is not needed by AWS CloudFormation. However, it seems that troubleshooting, and drift detection is much better supported by Terraform than by AWS CloudFormation. You can compare these features, by **applying the frequency perspective**. You'd usually set up the Terraform remote state once per project (so it's not going to happen often), but the troubleshooting and drift detection are the business-as-usual daily tasks that Infrastructure Engineers do. Please also note that since AWS CDK is a wrapper around AWS CloudFormation, not only you have the standard problems with troubleshooting AWS CloudFormation, but you also may have to deal with troubleshooting this additional layer.
 
+Secondly, it happens often that the cloud providers and other infrastructure providers add new services or introduce changes to the services already offered. In such cases, using such a IaC tool which is opensource, allows you to implement support for a new service or a new feature yourself. With AWS CloudFormation and with AWS CDK, you have to wait for someone to add changes to AWS CloudFormation.
+
 A general recommendation is to **choose 1 IaC tool** per project/team/company and stick with it. Otherwise:
+
 * you are asking the engineers to master multiple tools, and that time, that is going to be spent on learning a new tool, could be spent in a more efficient way.
 * you need to take care of the multiple sets of best practices (for each IaC tool) and of multiple software delivery lifecycles.
 * you need to come up with multiple sets of other tools that test your infrastructure code (e.g. linters or security scanners).
 
 
 See also:
+
 * https://techconnect.com.au/aws-cdk-the-good-the-bad-and-the-ugly/#:~:text=Anyone%20who%20has%20used%20AWS,describe%20as%20slow%20and%20chunky.
 * https://blog.devspecops.com/stop-using-aws-cdk-b2052abb4cb5
+* https://blog.kylegalbraith.com/2019/09/11/imperative-infrastructure-as-code-using-aws-cdk/
 
 ----
 # Appendix
@@ -571,4 +586,4 @@ To perform exactly these actions, run the following command to apply:
 ```
 The command not only correctly detected the drift (the deleted SSM Parameter), but also informs that in order to remediate (in order to re-create that SSM Parameter, we just need to run `terraform apply "my.tfplan"`.
 
-Let's also note how great the default Terraform workflow is. There are two commands which you use on a daily basis `terraform plan` and `terraform apply`. The `terraform plan` not only records the plan of which resources are to be deployed so that the current infrastructure matches the target infrastructure. So it shows the preview of what is going to be deployed. But you can also use that command for drift detection.
+Let's also note how great the default Terraform workflow is. There are two commands which you use on a daily basis - `terraform plan` and `terraform apply`. The `terraform plan` not only records the plan of which resources are to be deployed so that the current infrastructure matches the target infrastructure (meaning, it shows the preview of what is going to be deployed). But, also you can use that command for drift detection.
