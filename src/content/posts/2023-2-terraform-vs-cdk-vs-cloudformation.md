@@ -60,16 +60,63 @@ This leads to the following conclusions:
 
 ### Other differences
 
-| Feature | AWS CloudFormation | AWS CDK | Terraform  |
-| --- | --- | --- | --- |
-| Troubleshooting | More complex than Terraform (see the Appendix) | It's possible to detect errors in code without creating any infrastructure, although CDK adds an additional layer of abstraction on top of CFN, so it's not unreasonable to expect problems at any of these layers and in result, one has to be familiar with both tools ([example1](https://awsmaniac.com/troubleshooting-aws-cdk-part-1-nested-stacks/), [example2](https://medium.com/@gwenleigh/week-8-troubleshooting-cdk-deploy-not-working-72ce59ab8293)) | It's possible to detect errors in code without creating any infrastructure |
-| State locking (Prevent multiple processes/people/pipelines from applying changes to your infrastructure at the same time) | Native support (Updating an IN_PROGRESS stack not permitted) |  Same as AWS CloudFormation | Native support (Can be configured with DynamoDB or other backends) |
-| Preview your changes before actually applying them | Native support, but not a part of the default workflow. You can use [Change sets](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html) in [this way](https://theithollow.com/2018/01/22/introduction-aws-cloudformation-change-sets/). AWS recommends to [Create change sets before updating your stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html). | Native support, but not a part of the default workflow. See `cdk diff`. | Native support and a part of the default workflow. You first run `terraform plan` which shows the intended changes (the plan of the target infrastructure), and then `terraform apply` to actually deploy or delete the infrastructure. |
-| Drift detection (detect changes done to your infrastructure outside of the IaC tool). | Supported but limited. Limited, because (1) if a resource was deleted outside of CFN, you have to recreate it manually, (2) not all the resources are supported (e.g. SSM Parameter is not) (See the Appendix) | Supported with `cdk diff`, same limitations as AWS CloudFormation (also see the Appendix) | Supported by `terraform plan`. Part of the default workflow. (See the Appendix) |
-| Idempotency of the workflow (you can use the CLI commands and expect the same results) | Less idempotent than Terraform. (1) By default, when you create a new CFN stack and it fails, you have to delete the full stack - you cannot fix the error without deleting the stack. (2) There are multiple CLI commands available to create a CFN stack. The command `create-stack` can be used only once, while the command `deploy` can be used many times. These commands take different parameters (e.g. `--parameters` vs `--parameter-overrides`, `--on-failure`). There seems to be no `on-failure` option for `aws cloudformation deploy` command, so on the 1st time, if the stack fails, you have to delete it manually. | Easy idempotent command `cdk deploy`, however it does not offer the same confidence as Terraform commands do. (There is no possibility for this command to execute ChangeSets without creating them.  read more [here](https://github.com/aws/aws-cdk/issues/15495#issuecomment-881319185)). | Easy idempotent commands `terraform plan` and `terraform apply`. First, you create a plan for your infrastructure, then you apply the plan which creates the infrastructure. |
-| Modularity/re-useability | You can use just one YAML or JSON file or you can separate common components of your infrastructure into [nested stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html). You can also use modules. AWS recommends [using modules to reuse resource configurations](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html). You have to register the module in the account and region in which you want to use it. Otherwise, you end up with long CFN YAML or JSON files and repeated logic. | There are 3 levels of [constructs](https://docs.aws.amazon.com/cdk/v2/guide/constructs.html) and also stacks available. AWS recommends to [separate your application into multiple stacks](https://docs.aws.amazon.com/cdk/v2/guide/best-practices.html)  | Terraform natively supports multiple `.tf` files. You can use one or many `.tf` files. Additionally, you can use [Terraform modules](https://developer.hashicorp.com/terraform/language/modules). There are many open-source Terraform modules to choose from, e.g. [AWS Terraform Modules](https://registry.terraform.io/namespaces/terraform-aws-modules). |
-| Limits and quotas | Hard limits set by AWS: [max 200 Parameters and 500 resources](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html) per template. You can use nested templates as a workaround. |  (Same as AWS CloudFormation](https://docs.aws.amazon.com/cdk/v2/guide/stacks.html) | No such limits |
-| Support for deploying the infrastructure to multiple AWS accounts | Yes, with [StackSets](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html) | [Yes](https://aws.amazon.com/blogs/devops/cdk-credential-plugin/) | [Yes](https://medium.com/@aw.panda.aws/4-steps-to-deploy-to-multiple-aws-accounts-with-terraform-bbb00bb4e789) |
+<table style="font-size:0.8em; letter-spacing:0.01em; ">
+  <tr>
+    <th>Feature</th>
+    <th>AWS CloudFormation</th>
+    <th>AWS CDK</th>
+    <th>Terraform</th>
+  </tr>
+  <tr>
+    <td>Troubleshooting</td>
+    <td>More complex than Terraform (see the Appendix)</td>
+    <td>It's possible to detect errors in code without creating any infrastructure, although CDK adds an additional layer of abstraction on top of CFN, so it's not unreasonable to expect problems at any of these layers and in result, one has to be familiar with both tools (<a href="https://awsmaniac.com/troubleshooting-aws-cdk-part-1-nested-stacks">example1</a>, <a href="https://medium.com/@gwenleigh/week-8-troubleshooting-cdk-deploy-not-working-72ce59ab8293">example2</a>)</td>
+    <td>It's possible to detect errors in code without creating any infrastructure</td>
+  </tr>
+  <tr>
+      <td>State locking (Prevent multiple processes/people/pipelines from applying changes to your infrastructure at the same time)</td>
+      <td>Native support (Updating an IN_PROGRESS stack not permitted)</td>
+      <td>Same as AWS CloudFormation</td>
+      <td>Native support (Can be configured with DynamoDB or other backends)</td>
+  </tr>
+  <tr>
+      <td>Preview your changes before actually applying them</td>
+      <td>Native support, but not a part of the default workflow. You can use <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html">Change sets</a> in <a href="https://theithollow.com/2018/01/22/introduction-aws-cloudformation-change-sets/">this way</a>. AWS recommends to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html">Create change sets before updating your stacks</a>.</td>
+      <td>Native support, but not a part of the default workflow. See <code>cdk diff</code>.</td>
+      <td>Native support and a part of the default workflow. You first run <code>terraform plan</code> which shows the intended changes (the plan of the target infrastructure), and then <code>terraform apply</code> to actually deploy or delete the infrastructure.</td>
+  </tr>
+    <tr>
+        <td>Drift detection (detect changes done to your infrastructure outside of the IaC tool).</td>
+        <td>Supported but limited. Limited, because (1) if a resource was deleted outside of CFN, you have to recreate it manually, (2) not all the resources are supported (e.g. SSM Parameter is not) (See the Appendix)</td>
+        <td>Supported with <code>cdk diff</code>, same limitations as AWS CloudFormation (also see the Appendix)</td>
+        <td>Supported by <code>terraform plan</code>. Part of the default workflow. (See the Appendix)</td>
+    </tr>
+    <tr>
+        <td>Idempotency of the workflow (you can use the CLI commands and expect the same results)</td>
+        <td>Less idempotent than Terraform. (1) By default, when you create a new CFN stack and it fails, you have to delete the full stack - you cannot fix the error without deleting the stack. (2) There are multiple CLI commands available to create a CFN stack. The command <code>create-stack</code> can be used only once, while the command <code>deploy</code> can be used many times. These commands take different parameters (e.g. <code>--parameters</code> vs <code>--parameter-overrides</code>, <code>--on-failure</code>).</td>
+        <td>Easy idempotent command <code>cdk deploy</code>, however it does not offer the same confidence as Terraform commands do. (There is no possibility for this command to execute ChangeSets without creating them.  read more <a href="(https://github.com/aws/aws-cdk/issues/15495#issuecomment-881319185">here</a>).</td>
+        <td>Easy idempotent commands <code>terraform plan</code> and<code>terraform apply</code>. First, you create a plan for your infrastructure, then you apply the plan which creates the infrastructure.</td>
+    </tr>
+    <tr>
+        <td>Modularity/re-useability</td>
+        <td>You can use just one YAML or JSON file or you can separate common components of your infrastructure into <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">nested stacks</a>. You can also use modules. AWS recommends <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html">using modules to reuse resource configurations</a>. You have to register the module in the account and region in which you want to use it. Otherwise, you end up with long CFN YAML or JSON files and repeated logic.</td>
+        <td>There are 3 levels of <a href="https://docs.aws.amazon.com/cdk/v2/guide/constructs.html">constructs</a> and also stacks available. AWS recommends to <a href="https://docs.aws.amazon.com/cdk/v2/guide/best-practices.html">separate your application into multiple stacks</a></td>
+        <td>Terraform natively supports multiple <code>.tf</code> files. You can use one or many <code>.tf</code> files. Additionally, you can use <a href="https://developer.hashicorp.com/terraform/language/modules">Terraform modules</a>. There are many open-source Terraform modules to choose from, e.g. <a href="https://registry.terraform.io/namespaces/terraform-aws-modules">AWS Terraform Modules</a>.</td>
+     </tr>
+    <tr>
+        <td>Limits and quotas</td>
+        <td>Hard limits set by AWS: <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html">max 200 Parameters and 500 resources</a> per template. You can use nested templates as a workaround.</td>
+        <td>Same as AWS CloudFormation</td>
+        <td>No such limits</td>
+    </tr>
+    <tr>
+        <td>Support for deploying the infrastructure to multiple AWS accounts</td>
+        <td>Yes, with <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html">StackSets</a></td>
+        <td><a href="https://aws.amazon.com/blogs/devops/cdk-credential-plugin/">Yes</a></td>
+        <td><a href="https://medium.com/@aw.panda.aws/4-steps-to-deploy-to-multiple-aws-accounts-with-terraform-bbb00bb4e789">Yes</a></td>
+    </tr>
+
+</table>
 
 The list above does is not exhaustive. There are other differences between the IaC tools.
 
